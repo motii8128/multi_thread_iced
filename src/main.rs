@@ -1,14 +1,18 @@
+use iced::alignment::Horizontal;
 use iced::{widget::text, Application, Command, Element, Settings, Subscription};
+use multi_thread_iced::controller::{self, SERIAL};
+use multi_thread_iced::interface::DualShock4;
 use tokio::sync::mpsc;
 use std::cell::RefCell;
 
 fn main() -> iced::Result {
-    let (sender, receiver) = mpsc::unbounded_channel::<i32>();
+    let mut dr = controller::DualShock4Driver::new(SERIAL).unwrap();
+    let (sender, receiver) = mpsc::unbounded_channel::<DualShock4>();
 
     std::thread::spawn(move || {
-        for i in 0.. {
-            sender.send(i).unwrap();
-            std::thread::sleep(std::time::Duration::from_millis(200));
+        for _ in 0.. {
+            let get = dr.task().unwrap();
+            sender.send(get).unwrap();
         }
     });
 
@@ -16,17 +20,17 @@ fn main() -> iced::Result {
 }
 
 struct UiFlags {
-    receiver: mpsc::UnboundedReceiver<i32>,
+    receiver: mpsc::UnboundedReceiver<DualShock4>,
 }
 
 struct Ui {
-    receiver: RefCell<Option<mpsc::UnboundedReceiver<i32>>>,
-    num: i32,
+    receiver: RefCell<Option<mpsc::UnboundedReceiver<DualShock4>>>,
+    num: DualShock4,
 }
 
 #[derive(Debug, Clone)]
 enum Message {
-    ExternalMessageReceived(i32),
+    ExternalMessageReceived(DualShock4),
 }
 
 impl Application for Ui {
@@ -38,13 +42,13 @@ impl Application for Ui {
     fn new(flags: UiFlags) -> (Self, Command<Message>) {
         let app = Ui {
             receiver: RefCell::new(Some(flags.receiver)),
-            num: 0,
+            num: DualShock4::new(),
         };
         (app, Command::none())
     }
 
     fn title(&self) -> String {
-        String::from("External Message Example")
+        String::from("USAGI")
     }
 
     fn update(&mut self, message: Message) -> Command<Message> {
@@ -68,6 +72,10 @@ impl Application for Ui {
     }
 
     fn view(&self) -> Element<Message> {
-        text(self.num).into()
+        text(format!("x:{}\ny:{}\nrotation:{}", self.num.sticks.left_x, self.num.sticks.left_y, self.num.sticks.right_x)).horizontal_alignment(Horizontal::Center).size(50).font(iced::Font::MONOSPACE).into()
+    }
+
+    fn theme(&self) -> Self::Theme {
+        iced::Theme::TokyoNight
     }
 }

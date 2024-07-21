@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 iced = "0.12.0"
 tokio = { version = "1", features = ["full"] }
+hidapi = "2.6.0"
