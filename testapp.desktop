@@ -3,6 +3,6 @@ Version=1.0
 Type=Application
 Name=USAGI
 Comment=A simple hello world script
-Exec=/home/motii/test.sh
+Exec=/home/motii/multi_thread_iced/test.sh
 Icon=/home/motii/multi_thread_iced/icon.png
 Terminal=true
