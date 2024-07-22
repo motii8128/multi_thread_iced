@@ -62,6 +62,7 @@ impl Buttons {
 #[derive(Debug, Clone, Copy)]
 pub struct DualShock4
 {
+    pub state:bool,
     pub sticks:JoyStick,
     pub btns:Buttons,
     pub dpad:Dpad
@@ -70,7 +71,7 @@ pub struct DualShock4
 impl DualShock4 {
     pub fn new()->DualShock4
     {
-        DualShock4 { sticks: JoyStick::new(), btns: Buttons::new(), dpad: Dpad::new() }
+        DualShock4 { state:true, sticks: JoyStick::new(), btns: Buttons::new(), dpad: Dpad::new() }
     }
 }
 

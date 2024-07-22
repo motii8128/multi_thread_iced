@@ -33,7 +33,7 @@ impl DualShock4Driver {
         }
 
     }
-    pub fn task(&mut self)->Result<DualShock4, HidError>
+    pub fn task(&mut self)->DualShock4
     {
             let mut buf = [0_u8;256];
 
@@ -44,10 +44,10 @@ impl DualShock4Driver {
 
                     let (j, btn, d) = convert(get_data, self.mode);
 
-                    Ok(DualShock4 { sticks: j, btns: btn, dpad: d })
+                    DualShock4 { state:true, sticks: j, btns: btn, dpad: d }
                 }
-                Err(e)=>{
-                    Err(e)
+                Err(_)=>{
+                    DualShock4 {state:false, sticks:JoyStick::new(), btns:Buttons::new(), dpad:Dpad::new()}
                 }
             }
     }
