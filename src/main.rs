@@ -150,6 +150,7 @@ impl Application for Ui {
     {
         if self.state == State::ReadyNow
         {
+            let txt = text("USAGI Controller!!!!").size(200);
             let combo_box = combo_box(
                 &self.controller_connection_types,
                 "Select ControllerConnection ...",
@@ -158,7 +159,7 @@ impl Application for Ui {
     
             let btn = button("Start Controller").on_press(Message::ControllerStart);
 
-            let content = column![combo_box, btn].align_items(iced::alignment::Alignment::Start).spacing(50).into();
+            let content = column![txt,combo_box, btn].align_items(iced::alignment::Alignment::Start).spacing(50).into();
 
             content
         }   
