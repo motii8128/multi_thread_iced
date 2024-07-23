@@ -1,5 +1,5 @@
 use iced::alignment::Horizontal;
-use iced::{widget::{text, column, slider, combo_box, button}, Application, Command, Element, Settings, Subscription};
+use iced::{widget::{text, column, slider, combo_box, button, image}, Application, Command, Element, Settings, Subscription};
 use multi_thread_iced::controller::{self, BLE, SERIAL};
 use multi_thread_iced::interface::DualShock4;
 use tokio::sync::mpsc;
@@ -150,6 +150,8 @@ impl Application for Ui {
     {
         if self.state == State::ReadyNow
         {
+            let p = "./icon.png";
+            let image = image::Image::new(image::Handle::from_path(p)).height(iced::Length::Shrink).width(iced::Length::Shrink);
             let txt = text("USAGI Controller!!!!").size(200);
             let combo_box = combo_box(
                 &self.controller_connection_types,
@@ -159,12 +161,14 @@ impl Application for Ui {
     
             let btn = button("Start Controller").on_press(Message::ControllerStart);
 
-            let content = column![txt,combo_box, btn].align_items(iced::alignment::Alignment::Start).spacing(50).into();
+            let content = column![image,txt,combo_box, btn].align_items(iced::alignment::Alignment::Center).spacing(50).into();
 
             content
         }   
         else if self.state == State::ControllerStarted
         {
+            let p = "./icon.png";
+            let image = image::Image::new(image::Handle::from_path(p)).height(iced::Length::Shrink).width(iced::Length::Shrink);
             let sc = slider(
                 0..=100,
                 self.rate as u16,
@@ -187,7 +191,7 @@ impl Application for Ui {
             let rx = self.num.sticks.right_x * r;
             let text = text(format!("ControllerState:{}\nx:{}\ny:{}\nrotation:{}\nrate:{}%", controller_state, lx, ly, rx, self.rate)).horizontal_alignment(Horizontal::Center).size(50).font(iced::Font::MONOSPACE);
     
-            let content = column![text, sc].align_items(iced::alignment::Alignment::Start).spacing(50).into();
+            let content = column![text, sc, image].align_items(iced::Alignment::Start).spacing(50).into();
 
             content
         }
